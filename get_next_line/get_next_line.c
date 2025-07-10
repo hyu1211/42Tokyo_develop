@@ -2,34 +2,66 @@
 
 char *get_next_line(int fd)
 {
-	int			total_len;
+	int			save_len;
 	int			read_len;
-    char		buffer[BUFFER_SIZE];
+    char		buffer[BUFFER_SIZE + 1];
     char		*tmp;
-	static char	*line;
+	static char	*save;
+	char		*n;
+	char		*new_save;
+	char		*line;
+	char		*last_line;
 
-	total_len = 0;
-	tmp = NULL;
-	while (ft_strchr(buffer, '\n') == NULL)
+	while (!save || (save && !ft_strchr(save, '\n')))
 	{
 		read_len = read(fd, buffer, BUFFER_SIZE);
 		if (read_len == 0)
-			return (0);
+		{
+			if (save == NULL || *save == '\0')
+			{
+				free (save);
+				save = NULL;
+				return (NULL);
+			}
+			last_line = save;
+			save = NULL;
+			return (last_line);
+		}
 		else if (read_len == -1)
 		{
-			perror("read");
+			perror ("read");
 			return(NULL);
 		}
-		total_len += read_len;
-		line = (char *)malloc(sizeof(char) * total_len);
-		if (line == NULL)
+		buffer[read_len] = '\0';
+		save_len = ft_strlen_null(save);
+		tmp = (char *)malloc(sizeof(char) * (save_len + read_len + 1));
+		if (tmp == NULL)
+		{
+			free (save);
+			save = NULL;
 			return (NULL);
-		ft_dup(line, tmp, buffer);\\lineにtmpとbufferを結合させたものを格納する
-		tmp = line;
+		}
+		ft_strmerge(tmp, save, buffer);//save = tmp + buffer + \0
+		free (save);
+		save = tmp;
 	}
-	//readで\nが見つかった時の処理、
-	//静的関数に読み込んだ情報を保持する処理
-	//free処理
+	if (save == NULL)
+  		return (NULL);
+	n = ft_strchr(save, '\n');
+	if (n != NULL)
+	{
+  	  line = ft_trim_aftern(save, n);//NULLチェック必要？
+  	  new_save = ft_trim_beforen(save, n);//ここも
+  	  free(save);
+  	  save = new_save;
+  	  return (line);
+	}
+	else
+	{
+  	  line = save;
+ 	   save = NULL;
+  	  return (line);
+	}
 }
 
 int main(int ac, char **av)
@@ -49,7 +81,7 @@ int main(int ac, char **av)
 	}
 	else
     {
-		ft_putstr_fd("%s\n", "Error: Invalid number of arguments\n", 2);
+		ft_putstr_fd("Error: Invalid number of arguments\n", 2);
 		return (1);
 	}
 	while ((line = get_next_line(fd)) != NULL)
