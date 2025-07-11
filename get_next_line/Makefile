@@ -19,7 +19,7 @@ CFLAGS = -Wall -Wextra -Werror
 DEBUG_FLAGS = -g -fsanitize=address
 
 # ソースファイル
-SRCS = get_next_line.c get_next_line_utils.c
+SRCS = get_next_line.c get_next_line_utils.c main.c
 
 # オブジェクトファイル
 OBJS = $(SRCS:.c=.o)
@@ -69,4 +69,4 @@ help:
 	@echo "  help    - このヘルプを表示"
 
 # .PHONYターゲット
-.PHONY: all debug clean fclean re test help
+.PHONY: all debug clean fclean re test help 

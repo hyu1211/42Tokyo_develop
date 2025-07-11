@@ -46,11 +46,14 @@ char    *ft_strmerge(char *tmp, char *save, char *buffer)
 	tmp_num = 0;
 	save_num = 0;
 	buffer_num = 0;
-    while (save[save_num])
+	if (save)
     {
-        tmp[tmp_num] = save[save_num];
-		tmp_num++;
-		save_num++;
+        while (save[save_num])
+        {
+            tmp[tmp_num] = save[save_num];
+            tmp_num++;
+            save_num++;
+        }
     }
 	while (buffer[buffer_num])
 	{
@@ -84,20 +87,32 @@ char    *ft_trim_aftern(char *str, char *sep)
 
 char	*ft_trim_beforen(char *str, char *sep)
 {
-	int		sep_len;
-	int		str_len;
+	int		sep_pos;
+	int		remaining_len;
 	int		num;
 	char	*newstr;
 
 	num = 0;
-	str_len = ft_strlen_null(str);
-	sep_len = ft_strlen_null(sep) - 1;
-	newstr = (char *)malloc(sizeof(char) * (sep_len + 1));
+	sep_pos = sep - str;  // 改行文字の位置を正しく計算
+	remaining_len = ft_strlen_null(str) - sep_pos - 1;
+	
+	// 改行文字の後ろに何もない場合
+	if (remaining_len <= 0)
+	{
+		newstr = (char *)malloc(sizeof(char) * 1);
+		if (newstr == NULL)
+			return (NULL);
+		newstr[0] = '\0';
+		return (newstr);
+	}
+	
+	newstr = (char *)malloc(sizeof(char) * (remaining_len + 1));
 	if (newstr == NULL)
 		return (NULL);
-	while(num < sep_len)
+	
+	while (num < remaining_len)
 	{
-		newstr[num] = str[num + str_len - sep_len];
+		newstr[num] = str[sep_pos + 1 + num];
 		num++;
 	}
 	newstr[num] = '\0';

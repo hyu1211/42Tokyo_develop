@@ -1,1 +1,5 @@
-1234567890
+Hello
+World
+This is a test
+file for get_next_line
+function.

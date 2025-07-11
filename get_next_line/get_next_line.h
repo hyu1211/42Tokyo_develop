@@ -6,7 +6,9 @@
 # include <fcntl.h>
 # include <stdio.h>
 
-#define BUFFER_SIZE 1024
+# ifndef BUFFER_SIZE
+# define BUFFER_SIZE 1024
+# endif
 
 char    *get_next_line(int fd);
 void	ft_putstr_fd(char *s, int fd);
