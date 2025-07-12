@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: yuharada <yuharada@student.42tokyo.jp>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/12 16:15:47 by yuharada          #+#    #+#             */
+/*   Updated: 2025/07/12 16:15:47 by yuharada         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "get_next_line.h"
 
 void	ft_putstr_fd(char *s, int fd)
@@ -14,6 +26,8 @@ void	ft_putstr_fd(char *s, int fd)
 
 char	*ft_strchr(char const *str, int c)
 {
+	if (str == NULL)
+		return (NULL);
 	while (*str)
 	{
 		if (*str == (char)c)
@@ -37,66 +51,34 @@ int	ft_strlen_null(char *str)
 	return (i);
 }
 
-char    *ft_strmerge(char *tmp, char *save, char *buffer)
+char	*ft_trim_aftern(char *str, char *sep)
 {
-    int	tmp_num;
-	int	save_num;
-	int	buffer_num;
+	int		dif_len;
+	int		num;
+	char	*newstr;
 
-	tmp_num = 0;
-	save_num = 0;
-	buffer_num = 0;
-	if (save)
-    {
-        while (save[save_num])
-        {
-            tmp[tmp_num] = save[save_num];
-            tmp_num++;
-            save_num++;
-        }
-    }
-	while (buffer[buffer_num])
+	num = 0;
+	dif_len = ft_strlen_null(str) - ft_strlen_null(sep) + 1;
+	newstr = (char *)malloc(sizeof(char) * dif_len + 1);
+	if (newstr == NULL)
+		return (NULL);
+	while (num < dif_len)
 	{
-		tmp[tmp_num] = buffer[buffer_num];
-		tmp_num++;
-		buffer_num++;
+		newstr[num] = str[num];
+		num++;
 	}
-	tmp[tmp_num] = '\0';
-	return (tmp);
-}
-
-char    *ft_trim_aftern(char *str, char *sep)
-{
-    int     dif_len;
-    int     num;
-    char    *newstr;
-
-    num = 0;
-    dif_len = ft_strlen_null(str) - ft_strlen_null(sep) + 1;
-    newstr = (char *)malloc(sizeof(char) * dif_len + 1);
-    if (newstr == NULL)
-        return (NULL);
-    while (num < dif_len)
-    {
-        newstr[num] = str[num];
-        num++;
-    }
-    newstr[num] = '\0';
-    return (newstr);
+	newstr[num] = '\0';
+	return (newstr);
 }
 
 char	*ft_trim_beforen(char *str, char *sep)
 {
-	int		sep_pos;
 	int		remaining_len;
 	int		num;
 	char	*newstr;
 
 	num = 0;
-	sep_pos = sep - str;  // 改行文字の位置を正しく計算
-	remaining_len = ft_strlen_null(str) - sep_pos - 1;
-	
-	// 改行文字の後ろに何もない場合
+	remaining_len = ft_strlen_null(str) - (sep - str) - 1;
 	if (remaining_len <= 0)
 	{
 		newstr = (char *)malloc(sizeof(char) * 1);
@@ -105,14 +87,12 @@ char	*ft_trim_beforen(char *str, char *sep)
 		newstr[0] = '\0';
 		return (newstr);
 	}
-	
 	newstr = (char *)malloc(sizeof(char) * (remaining_len + 1));
 	if (newstr == NULL)
 		return (NULL);
-	
 	while (num < remaining_len)
 	{
-		newstr[num] = str[sep_pos + 1 + num];
+		newstr[num] = str[(sep - str) + 1 + num];
 		num++;
 	}
 	newstr[num] = '\0';

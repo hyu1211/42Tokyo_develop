@@ -16,7 +16,7 @@ int main(int ac, char **av)
 		}
 	}
 	else
-    {
+	{
 		ft_putstr_fd("Error: Invalid number of arguments\n", 2);
 		return (1);
 	}
